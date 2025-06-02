@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ticket Booking System - Train Module</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>Ticket Booking</h1>
+  <nav class="nav-buttons" aria-label="Primary Navigation including Login, Register, Book Ticket, and Destination">
+    <button id="login-nav" class="active" aria-controls="login-section" aria-selected="true">Login</button>
+    <button id="register-nav" aria-controls="register-section" aria-selected="false">Register</button>
+    <button id="booking-nav" aria-controls="booking-section" aria-selected="false" disabled>Book Ticket</button>
+    <button id="destination-nav" aria-controls="destination-section" aria-selected="false">Destination</button>
+  </nav>
+</header>
+<main>
+  <!-- Login Section -->
+  <section id="login-section" aria-label="Login Form" role="region">
+    <div class="auth-container">
+      <h2>Login</h2>
+      <form id="login-form" autocomplete="on" novalidate>
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" name="login-email" placeholder="email@example.com" required />
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" name="login-password" placeholder="Enter password" required minlength="6" />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Register Section -->
+  <section id="register-section" aria-label="Register Form" role="region" hidden tabindex="-1">
+    <div class="auth-container">
+      <h2>Create Account</h2>
+      <form id="register-form" autocomplete="on" novalidate>
+        <label for="register-name">Full Name</label>
+        <input type="text" id="register-name" name="register-name" placeholder="Your full name" required />
+        <label for="register-email">Email</label>
+        <input type="email" id="register-email" name="register-email" placeholder="email@example.com" required />
+        <label for="register-password">Password</label>
+        <input type="password" id="register-password" name="register-password" placeholder="Create password" required minlength="6" />
+        <label for="register-password-confirm">Confirm Password</label>
+        <input type="password" id="register-password-confirm" name="register-password-confirm" placeholder="Confirm password" required minlength="6" />
+        <button type="submit">Register</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Booking Section -->
+  <section id="booking-section" aria-label="Ticket Booking Form" role="region" hidden>
+    <h2>Book Your Ticket</h2>
+    <form id="booking-form" novalidate>
+      <label for="event-select">Select</label>
+      <select id="event-select" required>
+        <option value="" disabled selected>Choose</option>
+        <option value="train">Train</option>
+        <option value="bus">Bus</option>
+        <option value="flight">Flight</option>
+        <option value="concert">Live Concert</option>
+      </select>
+
+      <!-- Train Booking Module container -->
+      <div id="train-booking-module" style="display:none; margin-top:20px;">
+        <section aria-label="Journey Details">
+          <legend>Journey Details</legend>
+          <label for="source-station">Source Station</label>
+          <select id="source-station" required>
+            <option value="" disabled selected>Select source</option>
+            <option value="New York">New Delhi</option>
+            <option value="Chicago">Lucknow</option>
+            <option value="Los Angeles">Mumbai</option>
+            <option value="San Francisco">Kolkata</option>
+            <option value="Boston">Assam</option>
+          </select>
+
+          <label for="destination-station">Destination Station</label>
+          <select id="destination-station" required>
+            <option value="" disabled selected>Select destination</option>
+            <option value="New York">Chandigarh</option>
+            <option value="Chicago">Noida</option>
+            <option value="Los Angeles">Chennai</option>
+            <option value="San Francisco">Patna</option>
+            <option value="Boston">Muradabad</option>
+          </select>
+
+          <label for="journey-date">Date of Journey</label>
+          <input type="date" id="journey-date" required min="" />
+        </section>
+
+        <section aria-label="Available Trains">
+          <legend>Available Trains</legend>
+          <table id="train-list" aria-describedby="train-list-desc">
+            <caption id="train-list-desc" class="sr-only">List of available trains based on journey details</caption>
+            <thead>
+              <tr>
+                <th>Train Name</th>
+                <th>Time</th>
+                <th>Class</th>
+                <th>Availability</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+          <p id="no-trains-msg" style="display:none; color:#dc3545; font-weight:600; margin-top:10px;">No trains found. Please change your journey details.</p>
+        </section>
+
+        <section aria-label="Coach Selection" style="margin-top: 15px;">
+          <legend>Coach Selection</legend>
+          <select id="coach-selection" required>
+            <option value="" disabled selected>Select coach</option>
+            <option value="Sleeper">Sleeper</option>
+            <option value="AC 3 Tier">AC 3 Tier</option>
+            <option value="AC 2 Tier">AC 2 Tier</option>
+            <option value="AC First Class">AC First Class</option>
+          </select>
+        </section>
+
+        <section aria-label="Passenger Details" style="margin-top: 15px;">
+          <legend>Passenger Details</legend>
+          <div id="passenger-container" class="passenger-list">
+            <!-- Passenger inputs added dynamically -->
+          </div>
+          <button type="button" id="add-passenger">Add Passenger</button>
+        </section>
+
+        <button type="submit" style="margin-top: 20px;">Confirm Booking</button>
+
+        <div id="pnr" role="alert"></div>
+      </div>
+
+      <!-- Message for other events -->
+      <p id="other-events-message" style="margin-top:20px; font-weight:600; color:#666; display:none;">
+        Train booking module available only for Train event.
+      </p>
+    </form>
+  </section>
+
+  <!-- Image Gallery Section -->
+  <section id="destination-section" class="image-gallery" aria-label="Event Images">
+    <h2>Destination & Events</h2>
+    <div class="gallery-grid">
+      <div class="gallery-item" tabindex="0" aria-label="Train image. Click to scroll to the register section.">
+        <a href="javascript:void(0)" onclick="showRegisterSection()">
+          <img src="image1.png" alt="Train" />
+          <div class="caption">Train</div>
+        </a>
+      </div>
+      <div class="gallery-item" tabindex="0" aria-label="Bus image.">
+        <img src="image3.png" alt="Bus" />
+        <div class="caption">Bus</div>
+      </div>
+      <div class="gallery-item" tabindex="0" aria-label="Flight image.">
+        <img src="image2.png" alt="Flight" />
+        <div class="caption">Flight</div>
+      </div>
+      <div class="gallery-item" tabindex="0" aria-label="Concert image.">
+        <img src="image4.png" alt="Concert stage with colorful lights" />
+        <div class="caption">Concert</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-container">
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-item">
+        <h3>How do I book a train ticket?</h3>
+        <p>Log in to your account, navigate to the "Book Ticket" section, select "Train" from the event dropdown, choose your source and destination stations, select a date, pick an available train and coach, add passenger details, and confirm your booking. A PNR will be generated upon successful booking.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Can I cancel my booking?</h3>
+        <p>Yes, cancellations are possible within 24 hours of booking for a full refund, subject to availability. Contact our support team via email or phone to initiate a cancellation request.</p>
+      </div>
+      <div class="faq-item">
+        <h3>What payment methods are accepted?</h3>
+        <p>We accept major credit/debit cards, net banking, and select digital wallets. Ensure your payment details are entered correctly during the booking process.</p>
+      </div>
+      <div class="faq-item">
+        <h3>How will I receive my ticket?</h3>
+        <p>After booking, a digital ticket with your PNR will be sent to your registered email. You can also view your booking details in the "Book Ticket" section after logging in.</p>
+      </div>
+    </div>
+    <div class="contact-section">
+      <div class="social-media">
+        <h3>Follow Us</h3>
+        <a href="https://twitter.com/ticketbooking" aria-label="Follow us on Twitter"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://instagram.com/ticketbooking" aria-label="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://facebook.com/ticketbooking" aria-label="Follow us on Facebook"><i class="fab fa-facebook-f"></i></a>
+      </div>
+      <div class="contact-details">
+        <h2>Contact Us</h2>
+        <p>Email: <a href="mailto:support@ticketbooking.com">support@ticketbooking.com</a></p>
+        <p>Phone: +1-800-555-1234</p>
+        <p>Address: 123 Travel Lane, Booking City, BC 45678</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="script.js" defer></script>
+</body>
+</html>
